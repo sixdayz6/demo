@@ -1,13 +1,80 @@
 package com.example.demo;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class DemoApplicationTests {
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
 	@Test
-	void contextLoads() {
+	void questionInsertTest() {
+		Question q1 = new Question();
+        q1.setSubject("내가 sbb를 공부하는 법.");
+        q1.setContent("sbb는 점프 투 java로 공부해 보세요!");
+        q1.setCreateDate(LocalDateTime.now());
+        questionRepository.save(q1);
+
 	}
 
+    @Test
+    void questionFindAllTest() {
+        List<Question> all = this.questionRepository.findAll();
+        // 테스트 이므로
+        assertEquals(2, all.size());
+
+        Question q = all.get(0);
+        assertEquals("sbb가 무엇인가요?", q.getSubject());
+    }
+
+    @Test
+    void questionFindByIdTest() {
+        Optional<Question> oq = this.questionRepository.findById(1);
+        if(oq.isPresent()) {
+            Question q = oq.get();
+            assertEquals("sbb가 무엇인가여?", q.getSubject());
+        }
+    }
+
+    @Test
+    void questionFindBySubjectTest() {
+        Question q = this.questionRepository.findBySubject("스프링부트 모델 질문");
+        assertEquals(2, q.getId());
+    }
+
+    @Test
+    void questionFindBySubjectLikeTest() {
+        List<Question> qList = this.questionRepository.findBySubjectLike("%sbb%");
+        Question q = qList.get(2);
+        assertEquals("내가 sbb를 공부하는 법.", q.getSubject()); //getSubject()는 Lombok이 자동 생성해줌.
+    }
+
+    @Test
+    void questionUpdateTest() {
+        Optional<Question> oq = this.questionRepository.findById(1);
+        assertTrue(oq.isPresent());
+        Question q = oq.get();
+        q.setSubject("수정된 제목");
+        this.questionRepository.save(q);
+    }
+
+    @Test
+    void questionDeleteTest() {
+        assertEquals(5, this.questionRepository.count());
+        Optional<Question> oq = this.questionRepository.findById(1);
+        assertTrue(oq.isPresent());
+        Question q = oq.get();
+        this.questionRepository.delete(q);
+        assertEquals(4, this.questionRepository.count());
+    }
 }
