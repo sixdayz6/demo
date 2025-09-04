@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.answer.Answer;
+import com.example.demo.answer.AnswerRepository;
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
