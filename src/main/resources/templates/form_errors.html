@@ -1,0 +1,5 @@
+<!-- html과 body 등은 layout에 있으므로 생략 -->
+
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+    <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
+</div>
